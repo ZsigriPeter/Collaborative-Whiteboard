@@ -1,0 +1,33 @@
+# Python/Django
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.log
+*.pot
+*.py[cod]
+*.env
+*.venv
+*.egg-info/
+*.egg
+*.coverage
+*.pytest_cache/
+*.migrations/__pycache__/
+*.migrations/*.pyc
+
+# Django static/media
+staticfiles/
+media/
+
+# Docker
+*.env
+docker-compose.override.yml
+**/Dockerfile.dev
+
+# VS Code
+.vscode/
+
+# Mac / Windows
+.DS_Store
+Thumbs.db
