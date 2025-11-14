@@ -1,0 +1,6 @@
+django
+channels
+channels-redis
+psycopg2-binary
+corsheaders
+djangorestframework

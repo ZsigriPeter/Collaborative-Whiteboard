@@ -1,0 +1,68 @@
+services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: docker/auth.Dockerfile
+    volumes:
+      - ./backend/auth-service:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=auth_db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    depends_on:
+      - db
+
+  board-service:
+    build:
+      context: .
+      dockerfile: docker/board.Dockerfile
+    volumes:
+      - ./backend/board-service:/app
+    ports:
+      - "8001:8001"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=board_db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    depends_on:
+      - db
+
+  realtime-service:
+    build:
+      context: .
+      dockerfile: docker/realtime.Dockerfile
+    volumes:
+      - ./backend/realtime-service:/app
+    ports:
+      - "8002:8002"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=realtime_db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+      - db
+
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
