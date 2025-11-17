@@ -1,4 +1,4 @@
-from realtime.models import Stroke
+from realtime_service.models import Stroke
 
 def run():
     if Stroke.objects.count() == 0:
