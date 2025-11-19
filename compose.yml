@@ -8,12 +8,13 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DB_HOST=db
+      - DB_HOST=auth-db
       - DB_NAME=auth_db
       - DB_USER=postgres
       - DB_PASSWORD=postgres
     depends_on:
-      - db
+      auth-db:
+        condition: service_healthy
 
   board-service:
     build:
@@ -24,12 +25,13 @@ services:
     ports:
       - "8001:8001"
     environment:
-      - DB_HOST=db
+      - DB_HOST=board-db
       - DB_NAME=board_db
       - DB_USER=postgres
       - DB_PASSWORD=postgres
     depends_on:
-      - db
+      board-db:
+        condition: service_healthy
 
   realtime-service:
     build:
@@ -40,30 +42,77 @@ services:
     ports:
       - "8002:8002"
     environment:
-      - DB_HOST=db
+      - DB_HOST=realtime-db
       - DB_NAME=realtime_db
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - REDIS_HOST=redis
+      - REDIS_PORT=6379
     depends_on:
-      - redis
-      - db
+      redis:
+        condition: service_healthy
+      realtime-db:
+        condition: service_healthy
 
-  db:
+  auth-db:
     image: postgres:15
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: auth_db
     volumes:
-      - ./db/init:/docker-entrypoint-initdb.d
-      - pgdata:/var/lib/postgresql/data
+      - auth_pgdata:/var/lib/postgresql/data
+    healthcheck:
+       test: ["CMD-SHELL", "pg_isready -U postgres"]
+       interval: 10s
+       timeout: 5s
+       retries: 5
+
+  board-db:
+    image: postgres:15
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: board_db
+    volumes:
+      - board_pgdata:/var/lib/postgresql/data
+    healthcheck:
+       test: ["CMD-SHELL", "pg_isready -U postgres"]
+       interval: 10s
+       timeout: 5s
+       retries: 5
+
+  realtime-db:
+    image: postgres:15
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: realtime_db
+    volumes:
+      - realtime_pgdata:/var/lib/postgresql/data
+    healthcheck:
+       test: ["CMD-SHELL", "pg_isready -U postgres"]
+       interval: 10s
+       timeout: 5s
+       retries: 5
 
   redis:
     image: redis:7
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  pgdata:
+  auth_pgdata:
+  board_pgdata:
+  realtime_pgdata:

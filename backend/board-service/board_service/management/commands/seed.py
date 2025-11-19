@@ -3,13 +3,23 @@ from django.contrib.auth.models import User
 from board_service.models import Board
 
 class Command(BaseCommand):
-    help = "Seed initial board data"
+    help = "Seeds the database with initial data"
 
-    def handle(self, *args, **options):
-        if Board.objects.count() == 0:
-            Board.objects.create(name="Demo Board 1", owner=User.objects.get(username="alice"))
-            Board.objects.create(name="Team Sketch", owner=User.objects.get(username="bob"))
-            Board.objects.create(name="UX Ideas", owner=User.objects.get(username="charlie"))
-            self.stdout.write("Boards created!")
+    def handle(self, *args, **kwargs):
+        # Users
+        if User.objects.count() == 0:
+            User.objects.create_user("user1", password="pass")
+            User.objects.create_user("user2", password="pass")
+            User.objects.create_user("user3", password="pass")
+            print("Users created!")
         else:
-            self.stdout.write("Boards already exist. Skipping.")
+            print("Users already exist!")
+
+        # Boards
+        if Board.objects.count() == 0:
+            Board.objects.create(name="Demo Board 1", owner_id=1)
+            Board.objects.create(name="Team Sketch", owner_id=2)
+            Board.objects.create(name="UX Ideas", owner_id=3)
+            print("Boards created!")
+        else:
+            print("Boards already exist!")
