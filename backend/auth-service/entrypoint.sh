@@ -1,10 +1,8 @@
 #!/bin/sh
-
-# Wait a few seconds for DB
-sleep 3
+set -e
 
 echo "Running migrations..."
-python manage.py migrate
+python manage.py migrate --noinput
 
 echo "Running seed script..."
 python manage.py seed

@@ -1,3 +1,0 @@
-CREATE DATABASE auth_db;
-CREATE DATABASE board_db;
-CREATE DATABASE realtime_db;
