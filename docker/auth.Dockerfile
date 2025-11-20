@@ -8,4 +8,7 @@ RUN pip install -r requirements.txt
 
 COPY backend/auth-service .
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+COPY backend/auth-service/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
